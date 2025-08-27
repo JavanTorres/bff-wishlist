@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: bff-wishlist-container
+    restart: on-failure
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env.docker
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=100
+      - NODE_ENV=development
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./:/usr/src/app
+      - bff_node_modules:/usr/src/app/node_modules
+    command: pnpm run start:dev:ts
+    networks:
+      - wishlist-net
+
+volumes:
+  bff_node_modules:
+
+networks:
+  wishlist-net:
+    external: true
